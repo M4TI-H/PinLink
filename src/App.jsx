@@ -1,8 +1,25 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import './style.css';
 import Card from './components/Card.jsx';
 
 export default function App() {
+  const [addBtnContent, setAddBtnContent] = useState("+");
+  const hoverTimeoutRef = useRef(null);
+  const leaveTimeoutRef = useRef(null);
+
+  const handleAddBtnHover = () => {
+    clearTimeout(leaveTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => {
+      setAddBtnContent('+ Add link');
+    }, 200);
+  }
+
+  const handleAddBtnLeave = () => {
+    clearTimeout(hoverTimeoutRef.current);
+    leaveTimeoutRef.current = setTimeout(() => {
+      setAddBtnContent('+');
+    }, 50);
+  }
 
   return (
     <div className='w-screen h-screen bg-slate-900 py-4 overflow-x-hidden'>
@@ -25,7 +42,7 @@ export default function App() {
           <option>Name ↓</option>
         </select>
       </div>
-      <div className='grid grid-cols-[repeat(auto-fit,minmax(256px,1fr))] gap-4 
+      <div className='flex flex-wrap gap-4 
         w-screen h-auto px-10 md:px-20 mt-8 justify-items-center'
       >
         <Card />
@@ -35,6 +52,18 @@ export default function App() {
         <Card />
         <Card />
       </div>
+
+      <button onMouseEnter={handleAddBtnHover}
+        onMouseLeave={handleAddBtnLeave}
+        className='absolute w-16 h-16 hover:w-40 p-4
+        right-1/50 bottom-1/20
+        flex items-center justify-center
+        text-neutral-300 text-lg
+        bg-slate-800 rounded-full
+        hover:cursor-pointer
+        transition-all duration-300 ease-in-out'
+      >{addBtnContent}</button>
+
     </div>
   )
 }
