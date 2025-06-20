@@ -1,7 +1,13 @@
 import { useState } from 'react'
 import '../style.css';
 
-export default function Navbar({screenWidth}) {
+export default function Navbar({handleSearch}) {
+
+  //function filtering displayed data based on search query
+  const filterOnSearch = (e) => { 
+    const query = e.target.value;
+    handleSearch(query);
+  }
 
   return (
     <div className='
@@ -13,6 +19,7 @@ export default function Navbar({screenWidth}) {
       <div className='flex flex-row items-center gap-2 md:gap-8 w-full h-full'>
         <h1 className='text-2xl text-neutral-300 font-semibold'>PnLk</h1>
         <input type='text' 
+          onChange={filterOnSearch}
           placeholder='Search your link here' 
           className='
           h-1/2 w-1/2 lg:w-1/4 focus:w-2/3 lg:focus:w-1/3

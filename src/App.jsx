@@ -12,9 +12,9 @@ export default function App() {
 
   const smScreenW = 640;
   const mdScreenW = 768;
-
   const smScreenH = 600;
   const mdScreenH = 800;
+
   const linksData = [
   { id: "1", title: "Best JavaScript Resources", description: "A curated list of tutorials and tools to master JavaScript.", date: "2025-06-01", image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript"},
   { id: "2", title: "Daily UI Inspiration", description: "Stay updated with the latest UI/UX design trends.", date: "2025-05-25", image: "https://images.unsplash.com/photo-1602576666092-bf6447a729fc?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", url: "https://dribbble.com/ "},
@@ -25,6 +25,8 @@ export default function App() {
   { id: "7", title: "YouTube Dev Playlist", description: "Must-watch web development videos and tutorials.", date: "2025-06-02", image: "https://www.youtube.com/img/desktop/yt_1200.png", url: "https://www.youtube.com/@Fireship "},
   { id: "8", title: "My Personal Portfolio", description: "An example of a clean and minimal developer portfolio.", date: "2025-05-20", image: "https://www.fivebranches.edu/wp-content/uploads/2021/08/default-image.jpg", url: "https://example.com/portfolio "}
   ];
+  const [displayedPins, setDisplayedPins] = useState(linksData);
+
   const [addBtnContent, setAddBtnContent] = useState("+");
   const hoverTimeoutRef = useRef(null);
   const leaveTimeoutRef = useRef(null);
@@ -54,15 +56,26 @@ export default function App() {
       setAddBtnContent('+');
     }, 50);
   }
+  const handleSearch = (query) => {
+    if (!query || query.trim() === "") {
+      setDisplayedPins(linksData);
+      return;
+    }
+    const filteredData = linksData.filter(pin =>
+      pin.title.toLowerCase().includes(query.toLowerCase()) ||
+      pin.url.includes(query.toLowerCase())
+    );
+    setDisplayedPins(filteredData);
+  }
 
   return (
     <div className='fixed w-screen h-screen bg-slate-900 overflow-x-hidden 
     flex flex-col items-center pb-10'>
-      <Navbar screenWidth={screenWidth}/>
+      <Navbar handleSearch={handleSearch}/>
       <div className='flex flex-wrap gap-6 md:gap-8 justify-center
         w-full max-w-[100rem] md:px-20 mt-4 md:mt-8'
       >
-        {linksData.map((link) => (
+        {displayedPins.map((link) => (
           <Card key={link.id} screenWidth={screenWidth} smScreenW={smScreenW} mdScreenW={mdScreenW} data={link}/>
         ))}
       </div>
