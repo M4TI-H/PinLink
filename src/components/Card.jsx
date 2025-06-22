@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { BiDotsHorizontalRounded  } from 'react-icons/bi';
 import '../style.css';
 
-export default function Card({screenWidth, smScreenW, mdScreenW, data}) {
+export default function Card({screenWidth, data}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [displayOptions, setDisplayOptions] = useState(false);
-
-  const notExpandedHeight = screenWidth < mdScreenW ? 'h-36' : 'h-60';
+  const mdScreenW = 768;
+  const notExpandedHeight = screenWidth < mdScreenW ? 'h-40' : 'h-60';
   const expandedHeight = screenWidth < mdScreenW ? 'h-72' : 'h-96';
 
   return (
@@ -55,10 +55,10 @@ export default function Card({screenWidth, smScreenW, mdScreenW, data}) {
         <a onClick={(e) => e.stopPropagation()} 
           target="_blank" rel="noopener noreferrer"
           className={`text-center
-          text-[8px] md:text-sm font-medium
+          text-xs md:text-md font-medium
           ${isExpanded ? 'text-slate-400' : 'text-slate-700'}
           hover:text-slate-400 hover:underline`}
-          href="https://facebook.com/"
+          href={data.url}
         >{isExpanded ? data.url : screenWidth <= mdScreenW ? data.url.slice(0, 25) : data.url.slice(0, 30)}</a>
       </div>
     </div>

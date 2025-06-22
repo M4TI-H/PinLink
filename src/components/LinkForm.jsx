@@ -2,9 +2,10 @@ import { useState } from 'react';
 import '../style.css';
 import { BiX } from 'react-icons/bi';
 
-export default function LinkForm({setDisplayForm, screenHeight, smScreenH, mdScreenH}) {
+export default function LinkForm({setDisplayForm, screenHeight}) {
     const [image, setImage] = useState(undefined);
-
+    const smScreenH = 600;
+    
     return(
         <div className='fixed w-full h-full bg-neutral-950/60 z-10 overflow-y-auto'
             onClick={() => setDisplayForm(false)}

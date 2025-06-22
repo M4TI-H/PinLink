@@ -1,19 +1,18 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './style.css';
 import Card from './components/Card.jsx';
 import Navbar from './components/Navbar.jsx';
 import LinkForm from './components/LinkForm.jsx';
 import LinkFormCompact from './components/LinkFormCompact.jsx';
+import AddButton from './components/AddButton.jsx';
 
 export default function App() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
   const [displayForm, setDisplayForm] = useState(false);
 
-  const smScreenW = 640;
   const mdScreenW = 768;
   const smScreenH = 600;
-  const mdScreenH = 800;
 
   const linksData = [
   { id: "1", title: "Best JavaScript Resources", description: "A curated list of tutorials and tools to master JavaScript.", date: "2025-06-01", image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript"},
@@ -27,10 +26,6 @@ export default function App() {
   ];
   const [displayedPins, setDisplayedPins] = useState(linksData);
 
-  const [addBtnContent, setAddBtnContent] = useState("+");
-  const hoverTimeoutRef = useRef(null);
-  const leaveTimeoutRef = useRef(null);
-
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -43,64 +38,26 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleAddBtnHover = () => {
-    clearTimeout(leaveTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => {
-      setAddBtnContent('+ Add link');
-    }, 150);
-  }
-
-  const handleAddBtnLeave = () => {
-    clearTimeout(hoverTimeoutRef.current);
-    leaveTimeoutRef.current = setTimeout(() => {
-      setAddBtnContent('+');
-    }, 50);
-  }
-  const handleSearch = (query) => {
-    if (!query || query.trim() === "") {
-      setDisplayedPins(linksData);
-      return;
-    }
-    const filteredData = linksData.filter(pin =>
-      pin.title.toLowerCase().includes(query.toLowerCase()) ||
-      pin.url.includes(query.toLowerCase())
-    );
-    setDisplayedPins(filteredData);
-  }
-
   return (
     <div className='fixed w-screen h-screen bg-slate-900 overflow-x-hidden 
     flex flex-col items-center pb-10'>
-      <Navbar handleSearch={handleSearch}/>
+      <Navbar data={linksData} setDisplayedPins={setDisplayedPins} displayedPins={displayedPins}/>
       <div className='flex flex-wrap gap-6 md:gap-8 justify-center
-        w-full max-w-[100rem] md:px-20 mt-4 md:mt-8'
+        max-w-[100rem] md:px-20 mt-4 md:mt-8'
       >
         {displayedPins.map((link) => (
-          <Card key={link.id} screenWidth={screenWidth} smScreenW={smScreenW} mdScreenW={mdScreenW} data={link}/>
+          <Card key={link.id} screenWidth={screenWidth} data={link}/>
         ))}
       </div>
 
       {displayForm && screenWidth >= mdScreenW && screenHeight >= smScreenH &&
-        <LinkForm setDisplayForm={setDisplayForm} screenHeight={screenHeight} smScreenH={smScreenH} mdScreenH={mdScreenH}/>
+        <LinkForm setDisplayForm={setDisplayForm} screenHeight={screenHeight}/>
       }
       {displayForm && (screenWidth < mdScreenW || screenHeight < smScreenH) &&
         <LinkFormCompact setDisplayForm={setDisplayForm}/>
       }
 
-      <button onMouseEnter={handleAddBtnHover}
-        onMouseLeave={handleAddBtnLeave}
-        onClick={() => setDisplayForm(true)}
-        className={`absolute 
-        size-16 max-size-16 md:size-12 hover:w-36 max-w-36
-        p-4 right-1/50 bottom-1/50
-        flex items-center justify-center
-        text-neutral-300 text-md font-medium
-        bg-slate-800 rounded-full
-        hover:cursor-pointer
-        transition-all duration-300 ease-in-out`}
-      >
-        {screenWidth <= smScreenW ? "+" : addBtnContent}
-      </button>
+      <AddButton screenWidth={screenWidth} setDisplayForm={setDisplayForm}/>
     </div>
   )
 }
