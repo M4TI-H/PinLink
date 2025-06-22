@@ -5,6 +5,7 @@ import Navbar from './components/Navbar.jsx';
 import LinkForm from './components/LinkForm.jsx';
 import LinkFormCompact from './components/LinkFormCompact.jsx';
 import AddButton from './components/AddButton.jsx';
+import usePins from './components/hooks/usePins.js';
 
 export default function App() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
@@ -24,7 +25,7 @@ export default function App() {
   { id: "7", title: "YouTube Dev Playlist", description: "Must-watch web development videos and tutorials.", date: "2025-06-02", image: "https://www.youtube.com/img/desktop/yt_1200.png", url: "https://www.youtube.com/@Fireship "},
   { id: "8", title: "My Personal Portfolio", description: "An example of a clean and minimal developer portfolio.", date: "2025-05-20", image: "https://www.fivebranches.edu/wp-content/uploads/2021/08/default-image.jpg", url: "https://example.com/portfolio "}
   ];
-  const [displayedPins, setDisplayedPins] = useState(linksData);
+  const {displayedPins, setPins, createNewPin} = usePins(linksData);
 
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -41,20 +42,20 @@ export default function App() {
   return (
     <div className='fixed w-screen h-screen bg-slate-900 overflow-x-hidden 
     flex flex-col items-center pb-10'>
-      <Navbar data={linksData} setDisplayedPins={setDisplayedPins} displayedPins={displayedPins}/>
+      <Navbar data={linksData} setDisplayedPins={setPins} displayedPins={displayedPins}/>
       <div className='flex flex-wrap gap-6 md:gap-8 justify-center
         max-w-[100rem] md:px-20 mt-4 md:mt-8'
       >
         {displayedPins.map((link) => (
-          <Card key={link.id} screenWidth={screenWidth} data={link}/>
+          <Card key={link.id} screenWidth={screenWidth} data={link} setPins={setPins}/>
         ))}
       </div>
 
       {displayForm && screenWidth >= mdScreenW && screenHeight >= smScreenH &&
-        <LinkForm setDisplayForm={setDisplayForm} screenHeight={screenHeight}/>
+        <LinkForm setDisplayForm={setDisplayForm} setDisplayedPins={createNewPin} screenHeight={screenHeight}/>
       }
       {displayForm && (screenWidth < mdScreenW || screenHeight < smScreenH) &&
-        <LinkFormCompact setDisplayForm={setDisplayForm}/>
+        <LinkFormCompact setDisplayForm={setDisplayForm} setDisplayedPins={createNewPin}/>
       }
 
       <AddButton screenWidth={screenWidth} setDisplayForm={setDisplayForm}/>

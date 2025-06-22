@@ -2,12 +2,29 @@ import { useState } from 'react'
 import { BiDotsHorizontalRounded  } from 'react-icons/bi';
 import '../style.css';
 
-export default function Card({screenWidth, data}) {
+export default function Card({screenWidth, data, setPins}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [displayOptions, setDisplayOptions] = useState(false);
   const mdScreenW = 768;
   const notExpandedHeight = screenWidth < mdScreenW ? 'h-40' : 'h-60';
   const expandedHeight = screenWidth < mdScreenW ? 'h-72' : 'h-96';
+
+  const onShareClick = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(data.url);
+
+    setDisplayOptions(!displayOptions);
+  }
+
+  const onDeleteClick = (e) => {
+    e.stopPropagation();
+
+    setPins(prevPins => {
+      return prevPins.filter(pin => pin.id !== data.id);
+    });
+
+    setDisplayOptions(!displayOptions);
+  }
 
   return (
     <div onClick={() => setIsExpanded(!isExpanded)}
@@ -29,14 +46,12 @@ export default function Card({screenWidth, data}) {
           onClick={(e) => {setDisplayOptions(!displayOptions), e.stopPropagation()}}
         ><BiDotsHorizontalRounded /></button>
         <div className={`absolute ${displayOptions? 'flex' : 'hidden'} flex-col
-          w-16 top-8 right-2
+          w-20 top-8 right-2
           bg-slate-800 rounded-md`}> 
-          <button className='bg-none text-neutral-300 hover:bg-slate-900 hover:cursor-pointer rounded-t-md'
-          onClick={(e) => {setDisplayOptions(!displayOptions), e.stopPropagation()}}>Share</button>
-          <button className='bg-none text-neutral-300 hover:bg-slate-900 hover:cursor-pointer'
-          onClick={(e) => {setDisplayOptions(!displayOptions), e.stopPropagation()}}>Edit</button>
-          <button className='bg-none text-neutral-300 hover:bg-slate-900 hover:cursor-pointer rounded-b-md'
-          onClick={(e) => {setDisplayOptions(!displayOptions), e.stopPropagation()}}>Delete</button>
+          <button className='bg-none h-8 text-neutral-300 hover:bg-slate-900 hover:cursor-pointer rounded-t-md'
+          onClick={onShareClick}>Share</button>
+          <button className='bg-none h-8 text-neutral-300 hover:bg-slate-900 hover:cursor-pointer rounded-b-md'
+          onClick={onDeleteClick}>Delete</button>
         </div>
 
         <img src={data.image} alt={data.title}

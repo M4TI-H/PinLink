@@ -2,9 +2,17 @@ import { useState } from 'react';
 import '../style.css';
 import { BiX } from 'react-icons/bi';
 
-export default function LinkForm({setDisplayForm, screenHeight}) {
+export default function LinkForm({setDisplayForm, setDisplayedPins: addPin, screenHeight}) {
     const [image, setImage] = useState(undefined);
+    const [pinData, setPinData] = useState({title: "", description: "", url: ""});
     const smScreenH = 600;
+
+    const handleCreatePin = () => {
+        addPin(pinData, image); 
+        setDisplayForm(false);
+        setPinData({ title: "", description: "", url: "" });
+        setImage(undefined);
+    }
     
     return(
         <div className='fixed w-full h-full bg-neutral-950/60 z-10 overflow-y-auto'
@@ -20,11 +28,24 @@ export default function LinkForm({setDisplayForm, screenHeight}) {
                     hover:cursor-pointer'
                     onClick={() => setDisplayForm(false)}
                 >{<BiX />}</button>
+
                 <h1 className='text-lg text-neutral-300 font-semibold mb-8'>Create new pin</h1>
                 <div className='flex flex-col w-full h-3/4 items-center mb-4'>
                     <div className='w-3/4'>
+                        {screenHeight >= smScreenH && <label className='text-neutral-300 text-md ml-1 mb-1'>Link URL</label>}
+                        <input value={pinData.url} onChange={e => setPinData({...pinData, url: e.target.value})}  
+                            type="text" placeholder={screenHeight < smScreenH ? "Enter URL here" : ""}
+                            className='w-full h-1/12 min-h-10
+                            bg-slate-800 rounded-md px-2 
+                            focus:outline-2 outline-slate-600
+                            text-neutral-300 text-md font-semibold
+                            mb-8 focus:bg-slate-700 placeholder-gray-400'
+                        />
+                    </div>
+                    <div className='w-3/4'>
                         {screenHeight >= smScreenH && <label className='text-neutral-300 text-md ml-1 mb-1'>Title</label>}
-                        <input type="text" placeholder={screenHeight < smScreenH ? "Enter title here" : ""}
+                        <input value={pinData.title} onChange={e => setPinData({...pinData, title: e.target.value})}  
+                            type="text" placeholder={screenHeight < smScreenH ? "Enter title here" : ""}
                             maxLength={30}
                             className='w-full h-1/12 min-h-10
                             bg-slate-800 rounded-md px-2 
@@ -35,7 +56,8 @@ export default function LinkForm({setDisplayForm, screenHeight}) {
                     </div>
                     <div className='w-3/4'>
                         {screenHeight >= smScreenH && <label className='text-neutral-300 text-md ml-1 mb-1'>Description</label>}
-                        <textarea type="text" placeholder={screenHeight < smScreenH ? "Enter description here" : ""}
+                        <textarea value={pinData.description} onChange={e => setPinData({...pinData, description: e.target.value})}  
+                            type="text" placeholder={screenHeight < smScreenH ? "Enter description here" : ""}
                             maxLength={100}
                             className='w-full h-1/4 min-h-30
                             bg-slate-800 rounded-md px-2 py-1 resize-none
@@ -48,7 +70,8 @@ export default function LinkForm({setDisplayForm, screenHeight}) {
                         {screenHeight >= smScreenH && <label className='text-neutral-300 text-md ml-1 mb-1'>Your pin cover</label>}
                         {!image ? 
                         <div className='w-full min-h-16'>
-                            <input id="imgInput" type="file" accept="image/*" 
+                            <input value={pinData.image}  
+                            id="imgInput" type="file" accept="image/*" 
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     setImage(file ? URL.createObjectURL(file) : undefined);
@@ -81,7 +104,8 @@ export default function LinkForm({setDisplayForm, screenHeight}) {
                         }
                     </div>
                 </div>
-                <button className='w-48 min-h-10
+                <button onClick={handleCreatePin}
+                    className='w-48 min-h-10
                     bg-slate-800 rounded-md mt-auto mb-4
                     text-neutral-300 text-md font-semibold
                     hover:bg-slate-700 hover:cursor-pointer'

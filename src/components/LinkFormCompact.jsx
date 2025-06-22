@@ -16,6 +16,13 @@ export default function LinkFormCompact({setDisplayForm}) {
             >
                 <h1 className='text-2xl text-neutral-300 font-semibold mb-4'>Create new pin</h1>
                 <div className='flex flex-col w-full items-center mb-4'>
+                    <input type="text" placeholder='Enter link url here'
+                        className='w-3/4 h-10 placeholder-gray-400
+                        bg-slate-800 rounded-md px-2 
+                        focus:outline-2 outline-slate-600
+                        text-neutral-300 text-md font-semibold
+                        mb-8 focus:bg-slate-700'
+                    />
                     <input type="text" placeholder='Enter title here'
                         maxLength={30}
                         className='w-3/4 h-10 placeholder-gray-400
